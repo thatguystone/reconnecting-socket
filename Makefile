@@ -5,7 +5,7 @@ CFLAGS += -std=gnu99 -Wall -Woverride-init -Wsign-compare -Wtype-limits -Wuninit
 
 all: persistent_socket.o
 
-test:
+test: all
 	$(CC) $(CFLAGS) persistent_socket.o test.c -o $@
 	./test
 

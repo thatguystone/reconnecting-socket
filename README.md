@@ -39,6 +39,7 @@ psocket_close(socket);
 * If there are multiple addresses for a hostname, it goes through all while trying to reconnect
 * If a connection is ever lost, it transparently reconnects (though data will be lost)
 * Treat a TCP socket like a UDP socket, without any of the pain
+* Non-blocking sockets, so you can always go about your day
 
 ## Supported Platforms
 

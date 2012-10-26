@@ -8,6 +8,11 @@
  * while connected.
  *
  * @file persistent_socket.h
+ * @author Andrew Stone <andrew@clovar.com>
+ * @copyright 2012 Andrew Stone
+ *
+ * @internal This file is part of persistent-socket and is released under the
+ * MIT License: http://opensource.org/licenses/MIT
  */
 
 /**
@@ -33,7 +38,7 @@ typedef struct {
 /**
  * Create a new connection.
  * 
- * @param hostname The hostname to connect to.
+ * @param host The hostname to connect to.
  * @param port The port to connect to.
  * @param[out] psocket Where the new persistent socket should be put.
  *

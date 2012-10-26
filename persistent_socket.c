@@ -1,3 +1,11 @@
+/**
+ * persistent_socket.c
+ * Copyright 2012 Andrew Stone <andrew@clovar.com>
+ *
+ * This file is part of persistent-socket and is released under
+ * the MIT License: http://www.opensource.org/licenses/mit-license.php
+ */
+
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>

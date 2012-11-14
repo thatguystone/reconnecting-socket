@@ -91,7 +91,7 @@ void psocket_send(psocket *psocket, char *msg, int len) {
 int psocket_read(psocket *psocket, char *buff, size_t len) {
 	int got = recv(psocket->socket, buff, len, 0);
 	
-	if (got <= 0) {
+	if (got <= 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
 		_connect(psocket);
 		return 0;
 	}

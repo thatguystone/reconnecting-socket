@@ -10,7 +10,7 @@
 #include "persistent_socket.h"
 
 #define HOST "localhost"
-#define PORT 45673
+#define PORT 4321
 
 #define TEST(expr) \
 	total++; \

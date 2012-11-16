@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS += -std=gnu99 -Wall -Woverride-init -Wsign-compare -Wtype-limits -Wuninitialized
+CFLAGS += -g -std=gnu99 -Wall -Woverride-init -Wsign-compare -Wtype-limits -Wuninitialized
 
 .PHONY: test
 
@@ -8,6 +8,7 @@ all: persistent_socket.o
 test: all
 	$(CC) $(CFLAGS) persistent_socket.o test.c -o $@
 	./test
+	valgrind --tool=memcheck --leak-check=full --leak-resolution=high --num-callers=20 ./test
 
 clean:
 	rm -f persistent_socket.o

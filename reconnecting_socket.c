@@ -22,21 +22,21 @@
  * Attempt to connect to again, looping through all the addresses available until
  * one works.
  */
-static void _connect(psocket *psocket) {
-	if (psocket->socket != -1) {
-		close(psocket->socket);
-		psocket->socket = -1;
+static void _connect(rsocket *rsocket) {
+	if (rsocket->socket != -1) {
+		close(rsocket->socket);
+		rsocket->socket = -1;
 	}
 	
-	psocket->curr_addr = psocket->curr_addr->ai_next;
+	rsocket->curr_addr = rsocket->curr_addr->ai_next;
 	
 	// At the end of the chain, loop back to the beginning
-	if (psocket->curr_addr == NULL) {
-		psocket->curr_addr = psocket->addrs;
+	if (rsocket->curr_addr == NULL) {
+		rsocket->curr_addr = rsocket->addrs;
 	}
 	
 	int sock;
-	if ((sock = socket(psocket->curr_addr->ai_family, psocket->curr_addr->ai_socktype, 0)) == -1) {
+	if ((sock = socket(rsocket->curr_addr->ai_family, rsocket->curr_addr->ai_socktype, 0)) == -1) {
 		return;
 	}
 	
@@ -45,15 +45,15 @@ static void _connect(psocket *psocket) {
 		return;
 	}
 	
-	if (connect(sock, psocket->curr_addr->ai_addr, psocket->curr_addr->ai_addrlen) == -1 && errno != EINPROGRESS) {
+	if (connect(sock, rsocket->curr_addr->ai_addr, rsocket->curr_addr->ai_addrlen) == -1 && errno != EINPROGRESS) {
 		close(sock);
 		return;
 	}
 	
-	psocket->socket = sock;
+	rsocket->socket = sock;
 }
 
-int psocket_connect(const char *host, const int port, psocket **psocket) {
+int rsocket_connect(const char *host, const int port, rsocket **rsocket) {
 	struct addrinfo hints;
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
@@ -67,32 +67,32 @@ int psocket_connect(const char *host, const int port, psocket **psocket) {
 		return -1;
 	}
 	
-	*psocket = malloc(sizeof(**psocket));
-	(*psocket)->socket = -1;
-	(*psocket)->addrs = (*psocket)->curr_addr = res;
+	*rsocket = malloc(sizeof(**rsocket));
+	(*rsocket)->socket = -1;
+	(*rsocket)->addrs = (*rsocket)->curr_addr = res;
 	
-	_connect(*psocket);
+	_connect(*rsocket);
 	
 	return 0;
 }
 
-void psocket_close(psocket *psocket) {
-	close(psocket->socket);
-	freeaddrinfo(psocket->addrs);
-	free(psocket);
+void rsocket_close(rsocket *rsocket) {
+	close(rsocket->socket);
+	freeaddrinfo(rsocket->addrs);
+	free(rsocket);
 }
 
-void psocket_send(psocket *psocket, char *msg, int len) {
-	if (send(psocket->socket, msg, len, MSG_NOSIGNAL) != len) {
-		_connect(psocket);
+void rsocket_send(rsocket *rsocket, char *msg, int len) {
+	if (send(rsocket->socket, msg, len, MSG_NOSIGNAL) != len) {
+		_connect(rsocket);
 	}
 }
 
-int psocket_read(psocket *psocket, char *buff, size_t len) {
-	int got = recv(psocket->socket, buff, len, 0);
+int rsocket_read(rsocket *rsocket, char *buff, size_t len) {
+	int got = recv(rsocket->socket, buff, len, 0);
 	
 	if (got <= 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
-		_connect(psocket);
+		_connect(rsocket);
 		return 0;
 	}
 	

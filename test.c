@@ -28,9 +28,9 @@
 /**
  * The signature for all test functions.
  *
- * @param psocket The socket that was opened to the server.
+ * @param rsocket The socket that was opened to the server.
  */
-typedef int (*test_fn)(psocket *psocket);
+typedef int (*test_fn)(rsocket *rsocket);
 
 /**
  * The socket the server is listening on.
@@ -45,7 +45,7 @@ static unsigned int failed = 0;
 static unsigned int total_tests = 0;
 static unsigned int failed_tests = 0;
 
-int test_sane(psocket *psocket) {
+int test_sane(rsocket *rsocket) {
 	// Just make sure a connection comes through
 	int client;
 	ACCEPT(client);
@@ -53,11 +53,11 @@ int test_sane(psocket *psocket) {
 	return 0;
 }
 
-int test_send(psocket *psocket) {
+int test_send(rsocket *rsocket) {
 	int client;
 	ACCEPT(client);
 	
-	psocket_send(psocket, "test", 4);
+	rsocket_send(rsocket, "test", 4);
 	
 	char buff[5];
 	memset(buff, 0, sizeof(buff));
@@ -67,7 +67,7 @@ int test_send(psocket *psocket) {
 	return 0;
 }
 
-int test_send_reconnect(psocket *psocket) {
+int test_send_reconnect(rsocket *rsocket) {
 	int client;
 	ACCEPT(client);
 	
@@ -75,11 +75,11 @@ int test_send_reconnect(psocket *psocket) {
 	
 	// Make sure the other side knows it's closed
 	for (int i = 0; i < 2; i++) {
-		psocket_send(psocket, "test", 4);
+		rsocket_send(rsocket, "test", 4);
 	}
 	
 	ACCEPT(client);
-	psocket_send(psocket, "test", 4);
+	rsocket_send(rsocket, "test", 4);
 	
 	char buff[5];
 	memset(buff, 0, sizeof(buff));
@@ -89,7 +89,7 @@ int test_send_reconnect(psocket *psocket) {
 	return 0;
 }
 
-int test_read(psocket *psocket) {
+int test_read(rsocket *rsocket) {
 	int client;
 	ACCEPT(client);
 	
@@ -98,35 +98,35 @@ int test_read(psocket *psocket) {
 	char buff[5];
 	memset(buff, 0, sizeof(buff));
 	
-	TEST(psocket_read(psocket, buff, sizeof(buff)-1) == 4);
+	TEST(rsocket_read(rsocket, buff, sizeof(buff)-1) == 4);
 	TEST(strcmp(buff, "test") == 0);
 	
 	return 0;
 }
 
-int test_read_reconnect(psocket *psocket) {
+int test_read_reconnect(rsocket *rsocket) {
 	int client;
 	ACCEPT(client);
 	close(client);
 	
 	char buff[5];
 	
-	TEST(psocket_read(psocket, buff, sizeof(buff)-1) == 0);
+	TEST(rsocket_read(rsocket, buff, sizeof(buff)-1) == 0);
 	
 	ACCEPT(client);
 	send(client, "test", 4, MSG_NOSIGNAL);
 	
 	memset(buff, 0, sizeof(buff));
-	TEST(psocket_read(psocket, buff, sizeof(buff)-1) == 4);
+	TEST(rsocket_read(rsocket, buff, sizeof(buff)-1) == 4);
 	TEST(strcmp(buff, "test") == 0);
 	
 	return 0;
 }
 
-int test_multiple_reconnect(psocket *psocket) {
+int test_multiple_reconnect(rsocket *rsocket) {
 	struct addrinfo *next = malloc(sizeof(*next));
 	memset(next, 0, sizeof(*next));
-	psocket->addrs->ai_next = next;
+	rsocket->addrs->ai_next = next;
 
 	int client;
 	ACCEPT(client);
@@ -134,7 +134,7 @@ int test_multiple_reconnect(psocket *psocket) {
 	
 	// Make sure the other side knows it's closed
 	for (int i = 0; i < 2; i++) {
-		psocket_send(psocket, "test", 4);
+		rsocket_send(rsocket, "test", 4);
 	}
 	
 	// Make sure no connection attempt was made
@@ -143,10 +143,10 @@ int test_multiple_reconnect(psocket *psocket) {
 	
 	// Should loop back to the beginning since the second one failed
 	// And this should not send any data, it should just open a new connection
-	psocket_send(psocket, "test", 4);
+	rsocket_send(rsocket, "test", 4);
 	ACCEPT(client);
 	
-	psocket_send(psocket, "test", 4);
+	rsocket_send(rsocket, "test", 4);
 	char buff[5];
 	memset(buff, 0, sizeof(buff));
 	TEST(read(client, buff, sizeof(buff)) == 4);
@@ -201,13 +201,13 @@ void setup_server() {
 }
 
 int test(test_fn fn) {
-	psocket *socket;
-	TEST(psocket_connect(HOST, PORT, &socket) == 0);
+	rsocket *socket;
+	TEST(rsocket_connect(HOST, PORT, &socket) == 0);
 	
 	total_tests++;
 	failed_tests += fn(socket);
 	
-	psocket_close(socket);
+	rsocket_close(socket);
 	
 	return 0;
 }

@@ -1,2 +1,2 @@
 test
-persistent_socket.o
+reconnecting_socket.o

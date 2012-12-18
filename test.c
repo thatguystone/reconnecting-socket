@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "persistent_socket.h"
+#include "reconnecting_socket.h"
 
 #define HOST "localhost"
 #define PORT 4321

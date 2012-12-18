@@ -3,16 +3,16 @@ CFLAGS += -g -std=gnu99 -Wall -Woverride-init -Wsign-compare -Wtype-limits -Wuni
 
 .PHONY: test
 
-all: persistent_socket.o
+all: reconnecting_socket.o
 
 test: all
-	$(CC) $(CFLAGS) persistent_socket.o test.c -o $@
+	$(CC) $(CFLAGS) reconnecting_socket.o test.c -o $@
 	./test
 	valgrind --tool=memcheck --leak-check=full --leak-resolution=high --num-callers=20 ./test
 
 clean:
-	rm -f persistent_socket.o
+	rm -f reconnecting_socket.o
 	rm -f test
 
-persistent_socket.o: persistent_socket.c persistent_socket.h
+reconnecting_socket.o: reconnecting_socket.c reconnecting_socket.h
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@

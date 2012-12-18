@@ -1,5 +1,5 @@
 /**
- * persistent_socket.c
+ * reconnecting_socket.c
  * Copyright 2012 Andrew Stone <andrew@clovar.com>
  *
  * This file is part of persistent-socket and is released under
@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "persistent_socket.h"
+#include "reconnecting_socket.h"
 
 /**
  * Attempt to connect to again, looping through all the addresses available until

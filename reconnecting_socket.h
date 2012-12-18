@@ -7,7 +7,7 @@
  * typically return errors. This is essentially a UDP socket that has guaranteed delivery
  * while connected.
  *
- * @file persistent_socket.h
+ * @file reconnecting_socket.h
  * @author Andrew Stone <andrew@clovar.com>
  * @copyright 2012 Andrew Stone
  *

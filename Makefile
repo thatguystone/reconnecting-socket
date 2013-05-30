@@ -5,10 +5,15 @@ CFLAGS += -g -std=gnu99 -Wall -Woverride-init -Wsign-compare -Wtype-limits -Wuni
 
 all: reconnecting_socket.o
 
-test: all
-	$(CC) $(CFLAGS) reconnecting_socket.o test.c -o $@
+test: reconnecting_socket.c reconnecting_socket.h test.c
+	$(CC) $(CFLAGS) test.c -o $@
 	./test
-	valgrind --tool=memcheck --leak-check=full --leak-resolution=high --num-callers=20 ./test
+	valgrind \
+		--tool=memcheck \
+		--leak-check=full \
+		--leak-resolution=high \
+		--num-callers=20 \
+		./test
 
 clean:
 	rm -f reconnecting_socket.o

@@ -7,11 +7,11 @@
  * typically return errors. This is essentially a UDP socket that has guaranteed delivery
  * while connected.
  *
- * @file reconnecting_socket.h
+ * @file reconnecting-socket.h
  * @author Andrew Stone <andrew@clovar.com>
  * @copyright 2012 Andrew Stone
  *
- * @internal This file is part of persistent-socket and is released under the
+ * @internal This file is part of reconnecting-socket and is released under the
  * MIT License: http://opensource.org/licenses/MIT
  */
 
@@ -22,10 +22,10 @@ typedef struct rsocket rsocket_t;
 
 /**
  * Create a new connection.
- * 
+ *
  * @param host The hostname to connect to.
  * @param port The port to connect to.
- * @param[out] rsocket Where the new persistent socket should be put.
+ * @param[out] rsocket Where the new reconnecting socket should be put.
  *
  * @return 0 on success.
  * @return -1 on address lookup error.
@@ -35,14 +35,14 @@ int rsocket_connect(const char *host, const int port, rsocket_t **rsocket);
 /**
  * Closes a rsocket connection.
  *
- * @param rsocket The persistent socket to close.
+ * @param rsocket The reconnecting socket to close.
  */
 void rsocket_close(rsocket_t *rsocket);
 
 /**
  * Send some data out to the server.
  *
- * @param rsocket The persistent socket
+ * @param rsocket The reconnecting socket
  * @param msg The message to send
  * @param len The length of the message
  */
